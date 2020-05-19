@@ -8,6 +8,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,5 +32,18 @@ public class UmsRoleServiceImpl implements UmsRoleService {
     public List<UmsRole> listRole(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         return umsRoleMapper.selectByExample(new UmsRoleExample());
+    }
+
+    @Override
+    public int createRole(UmsRole umsRole){
+        umsRole.setAdminCount(0);
+        umsRole.setCreateTime(new Date());
+        umsRole.setSort(0);
+        return umsRoleMapper.insert(umsRole);
+    }
+
+    @Override
+    public int deleteRole(long id) {
+        return umsRoleMapper.deleteByPrimaryKey(id);
     }
 }

@@ -14,4 +14,8 @@ public interface UmsRoleService {
 
 
     List<UmsRole> listRole(Integer pageNum,Integer pageSize);
+
+    int createRole(UmsRole umsRole);
+
+    int deleteRole(long id);
 }
