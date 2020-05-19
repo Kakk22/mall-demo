@@ -36,7 +36,7 @@ public class UmsRoleController {
     }
 
     @ApiOperation("分页获取role")
-    @RequestMapping("/listRole")
+    @RequestMapping(value = "/listRole",method = RequestMethod.GET)
     public CommonResult<CommonPage<UmsRole>> listRole(@RequestParam(value = "pageNum", defaultValue = "1")
                                                       @ApiParam("页码") Integer pageNum,
                                                       @RequestParam(value = "pageSize", defaultValue = "2")
