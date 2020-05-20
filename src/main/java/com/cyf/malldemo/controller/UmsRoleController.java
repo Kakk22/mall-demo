@@ -4,6 +4,7 @@ package com.cyf.malldemo.controller;
 import com.alibaba.druid.sql.visitor.functions.If;
 import com.cyf.malldemo.common.CommonPage;
 import com.cyf.malldemo.common.CommonResult;
+import com.cyf.malldemo.mbg.model.UmsResource;
 import com.cyf.malldemo.mbg.model.UmsRole;
 import com.cyf.malldemo.service.UmsRoleService;
 import io.swagger.annotations.Api;
@@ -48,7 +49,7 @@ public class UmsRoleController {
     }
 
     @ApiOperation("新增角色")
-    @RequestMapping("/create")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public CommonResult createRole(@RequestBody UmsRole umsRole) {
         CommonResult commonResult;
         int result = umsRoleService.createRole(umsRole);
@@ -63,8 +64,8 @@ public class UmsRoleController {
     }
 
     @ApiOperation("删除角色")
-    @RequestMapping("/delete/{id}")
-    public CommonResult deleteRole(@PathVariable long id) {
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    public CommonResult deleteRole(@PathVariable Long id) {
         CommonResult commonResult;
         int result = umsRoleService.deleteRole(id);
         if (result == 1) {
@@ -76,4 +77,34 @@ public class UmsRoleController {
         }
         return commonResult;
     }
+
+    @ApiOperation("更新角色")
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    public CommonResult updateRole(@PathVariable Long id, @RequestBody UmsRole umsRole) {
+        CommonResult commonResult;
+        int result = umsRoleService.update(id, umsRole);
+        if (result == 1) {
+            LOGGER.debug("updateRole success：{}", id, umsRole);
+            commonResult = CommonResult.success(null);
+        } else {
+            LOGGER.debug("updateRole failed：{}", id, umsRole);
+            commonResult = CommonResult.failed("操作失败");
+        }
+        return commonResult;
+    }
+
+    @ApiOperation("根据id获取角色资源")
+    @RequestMapping(value = "/listResource/{id}", method = RequestMethod.POST)
+    public CommonResult<List<UmsResource>> allocResource(@PathVariable Long id) {
+        List<UmsResource> umsResources = umsRoleService.listResource(id);
+        return CommonResult.success(umsResources);
+    }
+
+    @ApiOperation("更新角色资源")
+    @RequestMapping(value = "/allocResource", method = RequestMethod.POST)
+    public CommonResult allocResource(@RequestParam Long id, @RequestParam List<Long> resourcesIds) {
+        int result = umsRoleService.allocResource(id, resourcesIds);
+        return CommonResult.success(result);
+    }
+
 }

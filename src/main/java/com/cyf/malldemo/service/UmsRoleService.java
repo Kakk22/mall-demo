@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.mbg.model.UmsResource;
 import com.cyf.malldemo.mbg.model.UmsRole;
 
 import java.util.List;
@@ -18,4 +19,10 @@ public interface UmsRoleService {
     int createRole(UmsRole umsRole);
 
     int deleteRole(long id);
+
+    int update(long id, UmsRole umsRole);
+
+    int allocResource(Long roleId,List<Long> resourceId);
+
+    List<UmsResource> listResource(Long roleId);
 }
