@@ -1,8 +1,9 @@
 package com.cyf.malldemo.service.impl;
 
 import com.cyf.malldemo.dao.UmsRoleDao;
-import com.cyf.malldemo.mbg.mapper.UmsResourceMapper;
+import com.cyf.malldemo.mbg.mapper.UmsMenuMapper;
 import com.cyf.malldemo.mbg.mapper.UmsRoleMapper;
+import com.cyf.malldemo.mbg.mapper.UmsRoleMenuRelationMapper;
 import com.cyf.malldemo.mbg.mapper.UmsRoleResourceRelationMapper;
 import com.cyf.malldemo.mbg.model.*;
 import com.cyf.malldemo.service.UmsRoleService;
@@ -27,6 +28,11 @@ public class UmsRoleServiceImpl implements UmsRoleService {
     @Autowired
     private UmsRoleDao umsRoleDao;
 
+    @Autowired
+    private UmsMenuMapper umsMenuMapper;
+    @Autowired
+    private UmsRoleMenuRelationMapper umsRoleMenuRelationMapper;
+
 
     @Override
     public List<UmsRole> listAllRole() {
@@ -37,12 +43,12 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     @Override
     public List<UmsRole> listRole(Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         return umsRoleMapper.selectByExample(new UmsRoleExample());
     }
 
     @Override
-    public int createRole(UmsRole umsRole){
+    public int createRole(UmsRole umsRole) {
         umsRole.setAdminCount(0);
         umsRole.setCreateTime(new Date());
         umsRole.setSort(0);
@@ -62,6 +68,7 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     /**
      * 更新角色资源
+     *
      * @param roleId
      * @param resourceIds
      * @return
@@ -73,7 +80,7 @@ public class UmsRoleServiceImpl implements UmsRoleService {
         example.createCriteria().andRoleIdEqualTo(roleId);
         umsRoleResourceRelationMapper.deleteByExample(example);
         //把新的资源加入
-        for (Long resourceId:resourceIds) {
+        for (Long resourceId : resourceIds) {
             UmsRoleResourceRelation umsRoleResourceRelation = new UmsRoleResourceRelation();
             umsRoleResourceRelation.setRoleId(roleId);
             umsRoleResourceRelation.setResourceId(resourceId);
@@ -82,6 +89,47 @@ public class UmsRoleServiceImpl implements UmsRoleService {
         return resourceIds.size();
     }
 
+    /**
+     * 根据角色id获取拥有的菜单
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public List<UmsMenu> listMenu(Long roleId) {
+        List<UmsMenu> menuListByRoleId = umsRoleDao.getMenuListByRoleId(roleId);
+        return menuListByRoleId;
+    }
+
+    /**
+     * 给角色分配菜单
+     *
+     * @param roleId
+     * @param menuIds
+     * @return
+     */
+    @Override
+    public int allocMenu(Long roleId, List<Long> menuIds) {
+        //删除原来的菜单
+        UmsRoleMenuRelationExample example = new UmsRoleMenuRelationExample();
+        example.createCriteria().andRoleIdEqualTo(roleId);
+        umsRoleMenuRelationMapper.deleteByExample(example);
+        //添加新的菜单
+        for (Long menuId : menuIds) {
+            UmsRoleMenuRelation umsRoleMenuRelation = new UmsRoleMenuRelation();
+            umsRoleMenuRelation.setRoleId(roleId);
+            umsRoleMenuRelation.setMenuId(menuId);
+            umsRoleMenuRelationMapper.insert(umsRoleMenuRelation);
+        }
+        return menuIds.size();
+    }
+
+    /**
+     * 获取角色的资源
+     *
+     * @param roleId
+     * @return
+     */
     @Override
     public List<UmsResource> listResource(Long roleId) {
         List<UmsResource> resourceList = umsRoleDao.getResourceListByRoleId(roleId);

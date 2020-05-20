@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.mbg.model.UmsMenu;
 import com.cyf.malldemo.mbg.model.UmsResource;
 import com.cyf.malldemo.mbg.model.UmsRole;
 
@@ -22,7 +23,13 @@ public interface UmsRoleService {
 
     int update(long id, UmsRole umsRole);
 
-    int allocResource(Long roleId,List<Long> resourceId);
+    int allocResource(Long roleId,List<Long> resourceIds);
+
+    int allocMenu(Long roleId , List<Long> menuIds);
 
     List<UmsResource> listResource(Long roleId);
+
+    List<UmsMenu> listMenu(Long roleId);
+
+
 }

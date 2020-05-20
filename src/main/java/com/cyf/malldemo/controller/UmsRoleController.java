@@ -4,6 +4,7 @@ package com.cyf.malldemo.controller;
 import com.alibaba.druid.sql.visitor.functions.If;
 import com.cyf.malldemo.common.CommonPage;
 import com.cyf.malldemo.common.CommonResult;
+import com.cyf.malldemo.mbg.model.UmsMenu;
 import com.cyf.malldemo.mbg.model.UmsResource;
 import com.cyf.malldemo.mbg.model.UmsRole;
 import com.cyf.malldemo.service.UmsRoleService;
@@ -94,8 +95,8 @@ public class UmsRoleController {
     }
 
     @ApiOperation("根据id获取角色资源")
-    @RequestMapping(value = "/listResource/{id}", method = RequestMethod.POST)
-    public CommonResult<List<UmsResource>> allocResource(@PathVariable Long id) {
+    @RequestMapping(value = "/listResource/{id}", method = RequestMethod.GET)
+    public CommonResult<List<UmsResource>> listResource(@PathVariable Long id) {
         List<UmsResource> umsResources = umsRoleService.listResource(id);
         return CommonResult.success(umsResources);
     }
@@ -104,6 +105,21 @@ public class UmsRoleController {
     @RequestMapping(value = "/allocResource", method = RequestMethod.POST)
     public CommonResult allocResource(@RequestParam Long id, @RequestParam List<Long> resourcesIds) {
         int result = umsRoleService.allocResource(id, resourcesIds);
+        return CommonResult.success(result);
+    }
+
+    @ApiOperation("根据id获取角色菜单")
+    @RequestMapping(value = "/listMenu/{id}", method = RequestMethod.GET)
+    public CommonResult<List<UmsMenu>> listMenu(@PathVariable Long id) {
+        List<UmsMenu> umsResources = umsRoleService.listMenu(id);
+        return CommonResult.success(umsResources);
+    }
+
+
+    @ApiOperation("更新角色菜单")
+    @RequestMapping(value = "/allocMenu", method = RequestMethod.POST)
+    public CommonResult allocMenu(@RequestParam Long id, @RequestParam List<Long> menuIds) {
+        int result = umsRoleService.allocMenu(id, menuIds);
         return CommonResult.success(result);
     }
 

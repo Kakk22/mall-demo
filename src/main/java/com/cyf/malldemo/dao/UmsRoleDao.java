@@ -1,5 +1,6 @@
 package com.cyf.malldemo.dao;
 
+import com.cyf.malldemo.mbg.model.UmsMenu;
 import com.cyf.malldemo.mbg.model.UmsResource;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +18,11 @@ public interface UmsRoleDao {
      * @return
      */
     List<UmsResource> getResourceListByRoleId(@Param("roleId") Long RoleId);
+
+    /**
+     * 根据角色id查询菜单
+     * @param roleId
+     * @return
+     */
+    List<UmsMenu> getMenuListByRoleId(@Param("roleId") Long roleId);
 }
