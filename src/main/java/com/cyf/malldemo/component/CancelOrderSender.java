@@ -32,7 +32,7 @@ public class CancelOrderSender {
                     public Message postProcessMessage(Message message) throws AmqpException {
                         //给消息设置延迟毫秒值
                         message.getMessageProperties().setExpiration(String.valueOf(delayTimes));
-                        return null;
+                        return message;
                     }
                 });
         LOGGER.info("send delay message orderId {}" ,orderId);
