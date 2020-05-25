@@ -59,8 +59,8 @@ public class RabbitMqConfig {
     public Queue orderTtlQueue() {
         return QueueBuilder
                 .durable(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getName())
-                .withArgument("x-dead-letter-exchange", QueueEnum.QUEUE_ORDER_CANCEL.getExchange())
-                .withArgument("x-dead-letter-routing-key", QueueEnum.QUEUE_ORDER_CANCEL.getRoutekey())
+                .deadLetterExchange(QueueEnum.QUEUE_ORDER_CANCEL.getExchange())//死后转发的交换机
+                .deadLetterRoutingKey(QueueEnum.QUEUE_ORDER_CANCEL.getRoutekey())//死后转发的routekey
                 .build();
     }
 
