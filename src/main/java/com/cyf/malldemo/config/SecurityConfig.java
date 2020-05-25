@@ -92,14 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
-        return username -> {
-            UmsAdmin admin = adminService.getAdminByUsername(username);
-            if (admin != null) {
-                List<UmsPermission> permissionList = adminService.getPermissionList(admin.getId());
-                return new AdminUserDetails(admin,permissionList);
-            }
-            throw new UsernameNotFoundException("用户名或密码错误");
-        };
+        return username -> adminService.loadUserByUsername(username);
     }
 
     @Bean

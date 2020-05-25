@@ -34,7 +34,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     @Override
     public void cancelOrder(Long orderId) {
-
+        //查看订单是否付款，未付款执行取消操作
+        LOGGER.info("cancelOrder orderId :{}",orderId);
     }
 
     //设置订单取消时间

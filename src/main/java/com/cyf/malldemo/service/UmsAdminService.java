@@ -2,6 +2,8 @@ package com.cyf.malldemo.service;
 
 import com.cyf.malldemo.mbg.model.UmsAdmin;
 import com.cyf.malldemo.mbg.model.UmsPermission;
+import com.cyf.malldemo.mbg.model.UmsResource;
+import com.cyf.malldemo.mbg.model.UmsRole;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -36,5 +38,17 @@ public interface UmsAdminService {
      */
     List<UmsPermission> getPermissionList(Long adminId);
 
+    /**
+     * 获得用户资源
+     * @param adminId
+     * @return
+     */
+    List<UmsResource> getResourceList(Long adminId);
 
+    /**
+     * 获得用户信息
+     * @param username
+     * @return
+     */
+    UserDetails loadUserByUsername(String username);
 }
