@@ -51,4 +51,6 @@ public interface UmsAdminService {
      * @return
      */
     UserDetails loadUserByUsername(String username);
+
+    UmsAdmin getItem(Long adminId);
 }

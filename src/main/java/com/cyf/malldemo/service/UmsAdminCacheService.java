@@ -18,4 +18,18 @@ public interface UmsAdminCacheService {
     List<UmsResource> getResourceList(Long adminId);
 
     void setResourceList(Long adminId, List<UmsResource> resourceList);
+
+    /**
+     * 当角色资源信息改变时，删除缓存
+     * @param roleId
+     */
+    void deleteResourceListByRole(Long roleId);
+
+    /**
+     * 删除后台用户缓存
+     * @param adminId
+     */
+    void delAdmin(Long adminId);
+
+
 }

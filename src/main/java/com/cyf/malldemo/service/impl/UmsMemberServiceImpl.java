@@ -1,5 +1,7 @@
 package com.cyf.malldemo.service.impl;
 
+
+import com.cyf.malldemo.annotation.CacheException;
 import com.cyf.malldemo.common.CommonResult;
 import com.cyf.malldemo.service.RedisService;
 import com.cyf.malldemo.service.UmsMemberService;
@@ -33,6 +35,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
      * @param telephone
      * @return
      */
+    @CacheException
     @Override
     public CommonResult generateAuthCode(String telephone) {
         StringBuilder sb = new StringBuilder();
@@ -54,6 +57,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
      * @param code
      * @return
      */
+    @CacheException
     @Override
     public CommonResult verifyAuthCode(String telephone, String code) {
         if (StringUtils.isEmpty(code)) {

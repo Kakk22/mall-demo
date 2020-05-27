@@ -136,4 +136,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         }
         throw new UsernameNotFoundException("用户名或密码错误");
     }
+
+    @Override
+    public UmsAdmin getItem(Long adminId) {
+        return adminMapper.selectByPrimaryKey(adminId);
+    }
 }

@@ -6,6 +6,7 @@ import com.cyf.malldemo.mbg.mapper.UmsRoleMapper;
 import com.cyf.malldemo.mbg.mapper.UmsRoleMenuRelationMapper;
 import com.cyf.malldemo.mbg.mapper.UmsRoleResourceRelationMapper;
 import com.cyf.malldemo.mbg.model.*;
+import com.cyf.malldemo.service.UmsAdminCacheService;
 import com.cyf.malldemo.service.UmsRoleService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class UmsRoleServiceImpl implements UmsRoleService {
     private UmsRoleResourceRelationMapper umsRoleResourceRelationMapper;
     @Autowired
     private UmsRoleDao umsRoleDao;
-
+    @Autowired
+    private UmsAdminCacheService umsAdminCacheService;
     @Autowired
     private UmsMenuMapper umsMenuMapper;
     @Autowired
@@ -86,6 +88,7 @@ public class UmsRoleServiceImpl implements UmsRoleService {
             umsRoleResourceRelation.setResourceId(resourceId);
             umsRoleResourceRelationMapper.insert(umsRoleResourceRelation);
         }
+        umsAdminCacheService.deleteResourceListByRole(roleId);
         return resourceIds.size();
     }
 
