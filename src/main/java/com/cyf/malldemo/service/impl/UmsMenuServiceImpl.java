@@ -6,6 +6,7 @@ import com.cyf.malldemo.mbg.mapper.UmsMenuMapper;
 import com.cyf.malldemo.mbg.model.UmsMenu;
 import com.cyf.malldemo.mbg.model.UmsMenuExample;
 import com.cyf.malldemo.service.UmsMenuService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,5 +58,14 @@ public class UmsMenuServiceImpl implements UmsMenuService {
                 .collect(Collectors.toList());
         node.setChildren(children);
         return node;
+    }
+
+    @Override
+    public List<UmsMenu> list(Long parentId, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum,pageSize);
+        UmsMenuExample example = new UmsMenuExample();
+        example.createCriteria().andParentIdEqualTo(parentId);
+        List<UmsMenu> umsMenus = umsMenuMapper.selectByExample(example);
+        return umsMenus;
     }
 }
