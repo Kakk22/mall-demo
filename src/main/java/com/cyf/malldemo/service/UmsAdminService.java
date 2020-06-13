@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.dto.UpdateAdminPasswordParam;
 import com.cyf.malldemo.mbg.model.UmsAdmin;
 import com.cyf.malldemo.mbg.model.UmsPermission;
 import com.cyf.malldemo.mbg.model.UmsResource;
@@ -53,4 +54,11 @@ public interface UmsAdminService {
     UserDetails loadUserByUsername(String username);
 
     UmsAdmin getItem(Long adminId);
+
+    /**
+     * 修改密码
+     * @param updateAdminPasswordParam 传入密码参数
+     * @return
+     */
+    int updatePassword(UpdateAdminPasswordParam updateAdminPasswordParam);
 }

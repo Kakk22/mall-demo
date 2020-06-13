@@ -31,7 +31,8 @@ public class RedisCacheAspect {
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
         Signature signature = proceedingJoinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
-        Method method = methodSignature.getMethod();//拿到method 可以进行反射
+        //拿到method 可以进行反射
+        Method method = methodSignature.getMethod();
         Object result = null;
         try {
             result = proceedingJoinPoint.proceed();

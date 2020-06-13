@@ -2,6 +2,7 @@ package com.cyf.malldemo.controller;
 
 import com.cyf.malldemo.common.CommonResult;
 import com.cyf.malldemo.dto.UmsAdminLoginParam;
+import com.cyf.malldemo.dto.UpdateAdminPasswordParam;
 import com.cyf.malldemo.mbg.model.UmsAdmin;
 import com.cyf.malldemo.mbg.model.UmsAdminLoginLog;
 import com.cyf.malldemo.mbg.model.UmsPermission;
@@ -54,7 +55,7 @@ public class UmsAdminController {
         if (token == null) {
             return CommonResult.validateFailed("用户名或密码错误");
         }
-        Map<String,String> tokenMap = new HashMap<>();
+        Map<String,String> tokenMap = new HashMap<>(8);
         tokenMap.put("token",token);
         tokenMap.put("tokenHead",tokenHead);
         return CommonResult.success(tokenMap);
@@ -66,6 +67,27 @@ public class UmsAdminController {
     public CommonResult<List<UmsPermission>> getPermission(@PathVariable long adminId){
         List<UmsPermission> permissionList = umsAdminService.getPermissionList(adminId);
         return CommonResult.success(permissionList);
+    }
+
+    @ApiOperation("修改用户密码")
+    @RequestMapping(value = "/updatePassword",method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult updatePassword(@RequestBody UpdateAdminPasswordParam param){
+        int status = umsAdminService.updatePassword(param);
+        int emptyParam = -1;
+        int emptyUser = -2;
+        int failPassword = -3;
+        if (status > 0){
+            return CommonResult.success("修改成功");
+        }else if (status == emptyParam){
+            return CommonResult.failed("参数不能为空");
+        }else if (status == emptyUser){
+            return CommonResult.failed("用户不存在");
+        }else if (status == failPassword){
+            return CommonResult.failed("旧密码错误");
+        }else {
+            return CommonResult.failed();
+        }
     }
 
 

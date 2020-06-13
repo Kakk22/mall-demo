@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.cyf.malldemo.common.utils.JWTtokenUtil;
 import com.cyf.malldemo.dao.UmsAdminRoleRelationDao;
 import com.cyf.malldemo.dto.AdminUserDetails;
+import com.cyf.malldemo.dto.UpdateAdminPasswordParam;
 import com.cyf.malldemo.mbg.mapper.UmsAdminMapper;
 import com.cyf.malldemo.mbg.model.*;
 import com.cyf.malldemo.service.UmsAdminCacheService;
@@ -18,10 +19,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 
 import java.util.Date;
@@ -53,8 +54,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     public UmsAdmin getAdminByUsername(String username) {
         //查缓存
         UmsAdmin admin = umsAdminCacheService.getAdmin(username);
-        if (admin!=null)
+        if (admin!=null) {
             return admin;
+        }
         UmsAdminExample example = new UmsAdminExample();
         example.createCriteria().andUsernameEqualTo(username);
         List<UmsAdmin> adminList = adminMapper.selectByExample(example);
@@ -140,5 +142,33 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public UmsAdmin getItem(Long adminId) {
         return adminMapper.selectByPrimaryKey(adminId);
+    }
+
+    @Override
+    public int updatePassword(UpdateAdminPasswordParam param) {
+        //判断三个参数不为空,为空返回-1
+        if (StringUtils.isEmpty(param.getNewPassword())
+                ||StringUtils.isEmpty(param.getOldPassword())
+                ||StringUtils.isEmpty(param.getUsername())){
+            return -1;
+        }
+        UmsAdminExample example = new UmsAdminExample();
+        example.createCriteria().andUsernameEqualTo(param.getUsername());
+        List<UmsAdmin> umsAdmins = adminMapper.selectByExample(example);
+        //如果账号不存在，返回-2
+        if (CollUtil.isEmpty(umsAdmins)){
+            return -2;
+        }
+        UmsAdmin umsAdmin = umsAdmins.get(0);
+        //密码错误返回-3
+        if (!passwordEncoder.matches(param.getOldPassword(),umsAdmin.getPassword())){
+            return -3;
+        }
+        String newPassword = passwordEncoder.encode(param.getNewPassword());
+        //设置新密码
+        umsAdmin.setPassword(newPassword);
+        adminMapper.updateByPrimaryKeySelective(umsAdmin);
+        umsAdminCacheService.delAdmin(umsAdmin.getId());
+        return 1;
     }
 }
