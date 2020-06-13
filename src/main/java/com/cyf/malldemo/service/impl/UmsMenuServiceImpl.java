@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,32 @@ public class UmsMenuServiceImpl implements UmsMenuService {
 
     @Autowired
     private UmsMenuMapper umsMenuMapper;
+
+    @Override
+    public int create(UmsMenu umsMenu) {
+        umsMenu.setCreateTime(new Date());
+        updateLevel(umsMenu);
+        return umsMenuMapper.insert(umsMenu);
+    }
+
+    /**
+     * 修改等级
+     * @param umsMenu
+     */
+    private void updateLevel(UmsMenu umsMenu) {
+        //没有父菜单则设为0
+        if (umsMenu.getParentId() == 0){
+            umsMenu.setLevel(0);
+        }else {
+            //根据父菜单设计等级
+            UmsMenu parentMenu = umsMenuMapper.selectByPrimaryKey(umsMenu.getParentId());
+            if (parentMenu != null){
+                umsMenu.setLevel(parentMenu.getLevel() + 1);
+            }else {
+                umsMenu.setLevel(0);
+            }
+        }
+    }
 
     /**
      * 以树形结构返回
@@ -67,5 +94,23 @@ public class UmsMenuServiceImpl implements UmsMenuService {
         example.createCriteria().andParentIdEqualTo(parentId);
         List<UmsMenu> umsMenus = umsMenuMapper.selectByExample(example);
         return umsMenus;
+    }
+
+    @Override
+    public int delete(Long id) {
+        return umsMenuMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public UmsMenu getItem(Long id) {
+        return umsMenuMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int update(Long id, UmsMenu umsMenu) {
+        umsMenu.setId(id);
+        updateLevel(umsMenu);
+        //方法将不为空的字段更新到数据库
+        return umsMenuMapper.updateByPrimaryKeySelective(umsMenu);
     }
 }

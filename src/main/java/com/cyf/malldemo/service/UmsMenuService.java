@@ -21,4 +21,12 @@ public interface UmsMenuService {
      * @return 子菜单
      */
     List<UmsMenu> list(Long parentId,Integer pageSize,Integer pageNum);
+
+    int create(UmsMenu umsMenu);
+
+    int delete(Long id);
+
+    UmsMenu getItem(Long id);
+
+    int update(Long id, UmsMenu umsMenu);
 }
