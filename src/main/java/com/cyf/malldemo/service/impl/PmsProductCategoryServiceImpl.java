@@ -5,12 +5,13 @@ import com.cyf.malldemo.dao.PmsProductCategoryDao;
 import com.cyf.malldemo.dao.ProductCategoryAttributeRelationDao;
 import com.cyf.malldemo.dto.PmsProductCategoryParam;
 import com.cyf.malldemo.dto.PmsProductCategoryWithChildren;
+import com.cyf.malldemo.mbg.mapper.PmsProductCategoryAttributeRelationMapper;
 import com.cyf.malldemo.mbg.mapper.PmsProductCategoryMapper;
-import com.cyf.malldemo.mbg.model.PmsProductCategory;
-import com.cyf.malldemo.mbg.model.PmsProductCategoryAttributeRelation;
-import com.cyf.malldemo.mbg.model.PmsProductCategoryExample;
+import com.cyf.malldemo.mbg.mapper.PmsProductMapper;
+import com.cyf.malldemo.mbg.model.*;
 import com.cyf.malldemo.service.PmsProductCategoryService;
 import com.github.pagehelper.PageHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -31,6 +32,10 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     private ProductCategoryAttributeRelationDao productCategoryAttributeRelationDao;
     @Autowired
     private PmsProductCategoryDao pmsProductCategoryDao;
+    @Autowired
+    private PmsProductMapper pmsProductMapper;
+    @Autowired
+    private PmsProductCategoryAttributeRelationMapper pmsProductCategoryAttributeRelationMapper;
 
     @Override
     public int create(PmsProductCategoryParam pmsProductCategoryParam) {
@@ -41,17 +46,18 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         //更新等级
         updateLevel(pmsProductCategory);
         //分类的属性
-        int count =pmsProductCategoryMapper.insert(pmsProductCategory);
+        int count = pmsProductCategoryMapper.insert(pmsProductCategory);
         List<Long> productAttributeIdList = pmsProductCategoryParam.getProductAttributeIdList();
         if (!CollectionUtils.isEmpty(productAttributeIdList)) {
             // TODO: 2020/6/14 分类属性的插入
-            insertRelationList(pmsProductCategory.getId(),productAttributeIdList);
+            insertRelationList(pmsProductCategory.getId(), productAttributeIdList);
         }
         return count;
     }
 
     /**
      * sql 语句查询 PmsProductCategoryWithChildren 把子分类放入List集合中
+     *
      * @return
      */
     @Override
@@ -61,7 +67,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
 
     @Override
     public List<PmsProductCategory> list(Long parentId, Integer pageSize, Integer pageNum) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         PmsProductCategoryExample example = new PmsProductCategoryExample();
         example.setOrderByClause("sort desc");
         example.createCriteria().andParentIdEqualTo(parentId);
@@ -78,6 +84,34 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         return pmsProductCategoryMapper.selectByPrimaryKey(id);
     }
 
+    @Override
+    public int update(Long id, PmsProductCategoryParam param) {
+        PmsProductCategory pmsProductCategory = new PmsProductCategory();
+        pmsProductCategory.setId(id);
+        BeanUtils.copyProperties(param,pmsProductCategory);
+        updateLevel(pmsProductCategory);
+        //先更新商品的分类
+        PmsProduct product = new PmsProduct();
+        product.setProductCategoryName(pmsProductCategory.getName());
+        PmsProductExample example = new PmsProductExample();
+        example.createCriteria().andProductCategoryIdEqualTo(id);
+        pmsProductMapper.updateByExampleSelective(product,example);
+        //更新商品与属性的关系
+        if(! CollectionUtils.isEmpty(param.getProductAttributeIdList())){
+            //删除所有再添加
+            PmsProductCategoryAttributeRelationExample relationExample = new PmsProductCategoryAttributeRelationExample();
+            relationExample.createCriteria().andProductCategoryIdEqualTo(id);
+            pmsProductCategoryAttributeRelationMapper.deleteByExample(relationExample);
+            insertRelationList(id,param.getProductAttributeIdList());
+        }else {
+            //为空，直接删除
+            PmsProductCategoryAttributeRelationExample relationExample = new PmsProductCategoryAttributeRelationExample();
+            relationExample.createCriteria().andProductAttributeIdEqualTo(id);
+            pmsProductCategoryAttributeRelationMapper.deleteByExample(relationExample);
+        }
+        return pmsProductCategoryMapper.updateByPrimaryKeySelective(pmsProductCategory);
+    }
+
     //采用语法把查出来的子对象放入List集合 尝试使用sql语句
    /* @Override
     public List<PmsProductCategoryWithChildren> listWithChildren() {
@@ -90,8 +124,11 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         return withChildrenList;
     }
 
-    *//**
+    */
+
+    /**
      * 将所有的PmsProductCategory 转化为 PmsProductCategoryWithChildren
+     *
      * @param pmsProductCategory 传入的父菜单
      * @param list
      * @return
@@ -106,7 +143,6 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         withChildren.setChildren(children);
         return withChildren;
     }*/
-
     private void insertRelationList(Long id, List<Long> productAttributeIdList) {
         List<PmsProductCategoryAttributeRelation> relationList = new ArrayList<>(10);
         for (Long longId : productAttributeIdList) {

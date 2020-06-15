@@ -63,4 +63,13 @@ public class PmsProductCategoryController {
         PmsProductCategory item = pmsProductCategoryService.getItem(id);
         return CommonResult.success(item);
     }
+
+    @ApiOperation("更新")
+    @PostMapping("/update/{id}")
+    public CommonResult update(@PathVariable Long id,
+                               @RequestBody PmsProductCategoryParam param) {
+        int i = pmsProductCategoryService.update(id, param);
+        return i > 0 ? CommonResult.success(i) : CommonResult.failed("更新失败");
+    }
+
 }

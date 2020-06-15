@@ -28,4 +28,6 @@ public interface PmsProductCategoryService {
     int delete(Long id);
 
     PmsProductCategory getItem(Long id);
+
+    int update(Long id,PmsProductCategoryParam param);
 }
