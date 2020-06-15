@@ -26,7 +26,7 @@ spring:
     publisher-confirms: true #如果对异步消息需要回调必须设置为true
 mybatis:
   mapper-locations:
-  - classpath:mapper/*.xml
+  - classpath:com/**/dao/*.xml
   - classpath*:com/**/mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

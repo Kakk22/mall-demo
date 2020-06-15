@@ -2,14 +2,14 @@ package com.cyf.malldemo.controller;
 
 import com.cyf.malldemo.common.CommonResult;
 import com.cyf.malldemo.dto.PmsProductCategoryParam;
+import com.cyf.malldemo.dto.PmsProductCategoryWithChildren;
 import com.cyf.malldemo.service.PmsProductCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author by cyf
@@ -32,5 +32,10 @@ public class PmsProductCategoryController {
         return CommonResult.failed("创建失败");
     }
 
-
+    @ApiOperation("查询所有一级分类及子分类")
+    @GetMapping("/list/withChildren")
+    public CommonResult listWithChildren(){
+        List<PmsProductCategoryWithChildren> withChildren = pmsProductCategoryService.listWithChildren();
+        return CommonResult.success(withChildren);
+    }
 }
