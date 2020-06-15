@@ -8,7 +8,9 @@ import com.cyf.malldemo.dto.PmsProductCategoryWithChildren;
 import com.cyf.malldemo.mbg.mapper.PmsProductCategoryMapper;
 import com.cyf.malldemo.mbg.model.PmsProductCategory;
 import com.cyf.malldemo.mbg.model.PmsProductCategoryAttributeRelation;
+import com.cyf.malldemo.mbg.model.PmsProductCategoryExample;
 import com.cyf.malldemo.service.PmsProductCategoryService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -57,8 +59,24 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         return pmsProductCategoryDao.listWithChildren();
     }
 
+    @Override
+    public List<PmsProductCategory> list(Long parentId, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum,pageSize);
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.setOrderByClause("sort desc");
+        example.createCriteria().andParentIdEqualTo(parentId);
+        return pmsProductCategoryMapper.selectByExample(example);
+    }
 
+    @Override
+    public int delete(Long id) {
+        return pmsProductCategoryMapper.deleteByPrimaryKey(id);
+    }
 
+    @Override
+    public PmsProductCategory getItem(Long id) {
+        return pmsProductCategoryMapper.selectByPrimaryKey(id);
+    }
 
     //采用语法把查出来的子对象放入List集合 尝试使用sql语句
    /* @Override
