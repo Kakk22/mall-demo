@@ -75,6 +75,24 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     }
 
     @Override
+    public int showStatus(List<Long> ids, Integer showStatus) {
+        PmsProductCategory pmsProductCategory = new PmsProductCategory();
+        pmsProductCategory.setShowStatus(showStatus);
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.createCriteria().andIdIn(ids);
+        return pmsProductCategoryMapper.updateByExampleSelective(pmsProductCategory,example);
+    }
+
+    @Override
+    public int navStatus(List<Long> ids, Integer navStatus) {
+        PmsProductCategory pmsProductCategory = new PmsProductCategory();
+        pmsProductCategory.setNavStatus(navStatus);
+        PmsProductCategoryExample example = new PmsProductCategoryExample();
+        example.createCriteria().andIdIn(ids);
+        return pmsProductCategoryMapper.updateByExampleSelective(pmsProductCategory,example);
+    }
+
+    @Override
     public int delete(Long id) {
         return pmsProductCategoryMapper.deleteByPrimaryKey(id);
     }
@@ -96,20 +114,26 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         PmsProductExample example = new PmsProductExample();
         example.createCriteria().andProductCategoryIdEqualTo(id);
         pmsProductMapper.updateByExampleSelective(product,example);
-        //更新商品与属性的关系
+        //更新筛选属性的关系
         if(! CollectionUtils.isEmpty(param.getProductAttributeIdList())){
             //删除所有再添加
-            PmsProductCategoryAttributeRelationExample relationExample = new PmsProductCategoryAttributeRelationExample();
-            relationExample.createCriteria().andProductCategoryIdEqualTo(id);
-            pmsProductCategoryAttributeRelationMapper.deleteByExample(relationExample);
+            deleteRelation(id);
             insertRelationList(id,param.getProductAttributeIdList());
         }else {
             //为空，直接删除
-            PmsProductCategoryAttributeRelationExample relationExample = new PmsProductCategoryAttributeRelationExample();
-            relationExample.createCriteria().andProductAttributeIdEqualTo(id);
-            pmsProductCategoryAttributeRelationMapper.deleteByExample(relationExample);
+            deleteRelation(id);
         }
         return pmsProductCategoryMapper.updateByPrimaryKeySelective(pmsProductCategory);
+    }
+
+    /**
+     * 根据id删除分类与筛选属性
+     * @param id
+     */
+    private void deleteRelation(Long id){
+        PmsProductCategoryAttributeRelationExample relationExample = new PmsProductCategoryAttributeRelationExample();
+        relationExample.createCriteria().andProductCategoryIdEqualTo(id);
+        pmsProductCategoryAttributeRelationMapper.deleteByExample(relationExample);
     }
 
     //采用语法把查出来的子对象放入List集合 尝试使用sql语句

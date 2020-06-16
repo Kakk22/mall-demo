@@ -30,4 +30,8 @@ public interface PmsProductCategoryService {
     PmsProductCategory getItem(Long id);
 
     int update(Long id,PmsProductCategoryParam param);
+
+    int showStatus(List<Long> ids,Integer showStatus);
+
+    int navStatus(List<Long> ids, Integer navStatus);
 }

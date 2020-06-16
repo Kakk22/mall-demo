@@ -72,4 +72,19 @@ public class PmsProductCategoryController {
         return i > 0 ? CommonResult.success(i) : CommonResult.failed("更新失败");
     }
 
+    @ApiOperation("修改显示状态")
+    @PostMapping("/update/showStatus")
+    public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids,
+                                         @RequestParam("showStatus") Integer showStatus) {
+        int i = pmsProductCategoryService.showStatus(ids, showStatus);
+        return i > 0 ? CommonResult.success(i) : CommonResult.failed("更新失败");
+    }
+
+    @ApiOperation("修改导航栏显示")
+    @PostMapping("/update/navStatus")
+    public CommonResult updateNavStatus(@RequestParam("ids") List<Long> ids,
+                                         @RequestParam("navStatus") Integer navStatus) {
+        int i = pmsProductCategoryService.navStatus(ids, navStatus);
+        return i > 0 ? CommonResult.success(i) : CommonResult.failed("更新失败");
+    }
 }
