@@ -8,7 +8,7 @@
    </resultMap>
 
     <select id="listWithChildren" resultMap="listWithChildren">
-        select
+          select
           c1.id,
           c1.name,
           c2.id child_id,
