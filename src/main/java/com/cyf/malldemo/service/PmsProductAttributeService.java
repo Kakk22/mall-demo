@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.dto.PmsProductAttributeParam;
 import com.cyf.malldemo.mbg.model.PmsProductAttribute;
 
 import java.util.List;
@@ -18,4 +19,8 @@ public interface PmsProductAttributeService {
      * @return
      */
     List<PmsProductAttribute>  getList(Long cid , Integer type,Integer pageSize,Integer pageNum);
+
+    int create(PmsProductAttributeParam param);
+
+    int delete(List<Long> ids);
 }
