@@ -14,5 +14,5 @@ public interface PmsProductLadderDao {
      * 批量插入
      * @return
      */
-    int insertList(@Param("list") List<PmsProductLadder> list);
+    int insertList(@Param("list") List<PmsProductLadder> productLadderList);
 }

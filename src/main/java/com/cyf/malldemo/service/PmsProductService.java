@@ -1,9 +1,13 @@
 package com.cyf.malldemo.service;
 
 import com.cyf.malldemo.dto.PmsProductParam;
+import com.cyf.malldemo.dto.PmsProductQueryParam;
+import com.cyf.malldemo.mbg.model.PmsProduct;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author by cyf
@@ -17,4 +21,11 @@ public interface PmsProductService {
      */
     @Transactional(isolation = Isolation.DEFAULT,propagation = Propagation.REQUIRED)
     int create(PmsProductParam param);
+
+
+    List<PmsProduct> list(PmsProductQueryParam pmsProductQueryParam,Integer pageSize,Integer pageNum);
+
+    int updateDeleteStatus(List<Long> ids,Integer deleteStatus);
+
+    int updateNewStatus(List<Long> ids, Integer newStatus);
 }
