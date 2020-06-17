@@ -52,8 +52,18 @@ public class PmsProductController {
     @ApiOperation("更新新品状态")
     @PostMapping("/update/newStatus")
     public CommonResult updateNewStatus(@RequestParam("ids") List<Long> ids,
-                                           @RequestParam("newStatus") Integer newStatus){
+                                        @RequestParam("newStatus") Integer newStatus){
         int count = pmsProductService.updateNewStatus(ids, newStatus);
+        return count > 0 ? CommonResult.success(count) : CommonResult.failed("操作失败");
+    }
+
+
+    @ApiOperation("更新审核状态")
+    @PostMapping("/update/verifyStatus")
+    public CommonResult updateverifyStatus(@RequestParam("ids") List<Long> ids,
+                                           @RequestParam("verifyStatus") Integer nverifyStatus,
+                                           @RequestParam("detail") String detail){
+        int count = pmsProductService.updateVerifyStatus(ids, nverifyStatus, detail);
         return count > 0 ? CommonResult.success(count) : CommonResult.failed("操作失败");
     }
 }

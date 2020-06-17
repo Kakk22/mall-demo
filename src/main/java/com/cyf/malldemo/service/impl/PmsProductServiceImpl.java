@@ -5,8 +5,10 @@ import com.cyf.malldemo.dto.PmsProductParam;
 import com.cyf.malldemo.dto.PmsProductQueryParam;
 import com.cyf.malldemo.mbg.mapper.PmsProductLadderMapper;
 import com.cyf.malldemo.mbg.mapper.PmsProductMapper;
+import com.cyf.malldemo.mbg.mapper.PmsProductVertifyRecordMapper;
 import com.cyf.malldemo.mbg.model.PmsProduct;
 import com.cyf.malldemo.mbg.model.PmsProductExample;
+import com.cyf.malldemo.mbg.model.PmsProductVertifyRecord;
 import com.cyf.malldemo.mbg.model.PmsSkuStock;
 import com.cyf.malldemo.service.PmsProductService;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +50,8 @@ public class PmsProductServiceImpl implements PmsProductService {
     private CmsPrefrenceAreaProductRelationDao cmsPrefrenceAreaProductRelationDao;
     @Autowired
     private PmsSkuStockDao pmsskuStockDao;
+    @Autowired
+    private PmsProductVertifyRecordDao pmsProductVertifyRecordDao;
 
     @Override
     public int create(PmsProductParam param) {
@@ -130,6 +135,28 @@ public class PmsProductServiceImpl implements PmsProductService {
         PmsProductExample example = new PmsProductExample();
         example.createCriteria().andIdIn(ids);
         return pmsProductMapper.updateByExampleSelective(pmsProduct,example);
+    }
+
+    @Override
+    public int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail) {
+        PmsProduct pmsProduct = new PmsProduct();
+        pmsProduct.setVerifyStatus(verifyStatus);
+        PmsProductExample example = new PmsProductExample();
+        example.createCriteria().andIdIn(ids);
+        int count = pmsProductMapper.updateByExampleSelective(pmsProduct, example);
+        List<PmsProductVertifyRecord> list = new ArrayList<>(10);
+        //修改审核后 要加入审核记录
+        for (Long id : ids) {
+            PmsProductVertifyRecord record = new PmsProductVertifyRecord();
+            record.setCreateTime(new Date());
+            record.setDetail(detail);
+            record.setProductId(id);
+            record.setVertifyMan("test");
+            record.setStatus(verifyStatus);
+            list.add(record);
+        }
+        pmsProductVertifyRecordDao.insertList(list);
+        return count;
     }
 
     /**

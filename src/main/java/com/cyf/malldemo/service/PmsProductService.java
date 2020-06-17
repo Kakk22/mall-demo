@@ -16,16 +16,19 @@ import java.util.List;
 public interface PmsProductService {
     /**
      * 事务隔离级别 和传播级别
+     *
      * @param param
      * @return
      */
-    @Transactional(isolation = Isolation.DEFAULT,propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     int create(PmsProductParam param);
 
 
-    List<PmsProduct> list(PmsProductQueryParam pmsProductQueryParam,Integer pageSize,Integer pageNum);
+    List<PmsProduct> list(PmsProductQueryParam pmsProductQueryParam, Integer pageSize, Integer pageNum);
 
-    int updateDeleteStatus(List<Long> ids,Integer deleteStatus);
+    int updateDeleteStatus(List<Long> ids, Integer deleteStatus);
 
     int updateNewStatus(List<Long> ids, Integer newStatus);
+
+    int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail);
 }
