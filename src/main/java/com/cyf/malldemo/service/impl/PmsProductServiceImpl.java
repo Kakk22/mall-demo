@@ -3,9 +3,7 @@ package com.cyf.malldemo.service.impl;
 import com.cyf.malldemo.dao.*;
 import com.cyf.malldemo.dto.PmsProductParam;
 import com.cyf.malldemo.dto.PmsProductQueryParam;
-import com.cyf.malldemo.mbg.mapper.PmsProductLadderMapper;
 import com.cyf.malldemo.mbg.mapper.PmsProductMapper;
-import com.cyf.malldemo.mbg.mapper.PmsProductVertifyRecordMapper;
 import com.cyf.malldemo.mbg.model.PmsProduct;
 import com.cyf.malldemo.mbg.model.PmsProductExample;
 import com.cyf.malldemo.mbg.model.PmsProductVertifyRecord;
@@ -34,8 +32,6 @@ public class PmsProductServiceImpl implements PmsProductService {
     public static final Logger LOGGER = LoggerFactory.getLogger(PmsProductService.class);
     @Autowired
     private PmsProductMapper pmsProductMapper;
-    @Autowired
-    private PmsProductLadderMapper pmsProductLadderMapper;
     @Autowired
     private PmsProductLadderDao pmsProductLadderDao;
     @Autowired
