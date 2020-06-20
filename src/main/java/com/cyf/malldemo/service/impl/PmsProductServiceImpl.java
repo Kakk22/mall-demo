@@ -3,6 +3,7 @@ package com.cyf.malldemo.service.impl;
 import com.cyf.malldemo.dao.*;
 import com.cyf.malldemo.dto.PmsProductParam;
 import com.cyf.malldemo.dto.PmsProductQueryParam;
+import com.cyf.malldemo.dto.PmsProductResult;
 import com.cyf.malldemo.mbg.mapper.PmsProductMapper;
 import com.cyf.malldemo.mbg.model.PmsProduct;
 import com.cyf.malldemo.mbg.model.PmsProductExample;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.PrimitiveIterator;
 
 /**
  * @author by cyf
@@ -48,6 +50,8 @@ public class PmsProductServiceImpl implements PmsProductService {
     private PmsSkuStockDao pmsskuStockDao;
     @Autowired
     private PmsProductVertifyRecordDao pmsProductVertifyRecordDao;
+    @Autowired
+    private PmsProductDao pmsProductDao;
 
     @Override
     public int create(PmsProductParam param) {
@@ -179,6 +183,16 @@ public class PmsProductServiceImpl implements PmsProductService {
                 pmsSkuStock.setSkuCode(sb.toString());
             }
         }
+    }
+
+    /**
+     * 根据商品id返回编辑数据
+     * @param id 商品id
+     * @return
+     */
+    @Override
+    public PmsProductResult getUpdateInfo(Long id) {
+        return pmsProductDao.getResultInfo(id);
     }
 
     /**

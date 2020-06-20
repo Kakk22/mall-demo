@@ -2,6 +2,7 @@ package com.cyf.malldemo.service;
 
 import com.cyf.malldemo.dto.PmsProductParam;
 import com.cyf.malldemo.dto.PmsProductQueryParam;
+import com.cyf.malldemo.dto.PmsProductResult;
 import com.cyf.malldemo.mbg.model.PmsProduct;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,4 +32,6 @@ public interface PmsProductService {
     int updateNewStatus(List<Long> ids, Integer newStatus);
 
     int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail);
+
+    PmsProductResult getUpdateInfo(Long id);
 }

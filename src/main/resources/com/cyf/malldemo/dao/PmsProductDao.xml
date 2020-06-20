@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyf.malldemo.dao.PmsProductDao">
+    <resultMap id="updateInfoMap" type="com.cyf.malldemo.dto.PmsProductResult" extends="com.cyf.malldemo.mbg.mapper.PmsProductMapper.ResultMapWithBLOBs">
+        <result column="cateParentId" jdbcType="BIGINT" property="cateParentId"></result>
+        <collection property="productLadderList" columnPrefix="ladder_" resultMap="com.cyf.malldemo.mbg.mapper.PmsProductLadderMapper.BaseResultMap">
+        </collection>
+        <collection property="productFullReductionList" columnPrefix="full_" resultMap="com.cyf.malldemo.mbg.mapper.PmsProductFullReductionMapper.BaseResultMap">
+        </collection>
+        <collection property="memberPriceList" columnPrefix="member_" resultMap="com.cyf.malldemo.mbg.mapper.PmsMemberPriceMapper.BaseResultMap">
+        </collection>
+        <collection property="skuStockList" columnPrefix="sku_" resultMap="com.cyf.malldemo.mbg.mapper.PmsSkuStockMapper.BaseResultMap">
+        </collection>
+        <collection property="productAttributeValueList" columnPrefix="att_" resultMap="com.cyf.malldemo.mbg.mapper.PmsProductAttributeValueMapper.BaseResultMap">
+        </collection>
+        <collection property="subjectProductRelationList" column="{productId=id}" select="selectSubjectProductRelationListByProductId"></collection>
+        <collection property="prefrenceAreaProductRelationList" column="{productId=id}" select="selectPrefrenceAreaProductRelationListByProductId"></collection>
+    </resultMap>
+    <select id="getResultInfo" resultMap="updateInfoMap">
+        select
+          p.*,
+          pc.parent_id cateParentId,
+          l.id ladder_id,l.product_id ladder_product_id,l.count ladder_count,l.discount ladder_discount,l.price ladder_price,
+          pf.id  full_id, pf.product_id  full_product_id,  pf.full_price full_full_price,pf.reduce_price full_reduce_price,
+          m.id   member_id,m.product_id  member_product_id,m.member_level_id member_member_level_id,m.member_price member_member_price,m.member_level_name member_member_level_name,
+          sku.id sku_id, sku.product_id  sku_product_id,   sku.sku_code sku_sku_code,sku.price sku_price,sku.stock sku_stock,sku.low_stock sku_low_stock,sku.pic sku_pic,sku.sale sku_sale,sku.promotion_price sku_promotion_price,sku.lock_stock sku_lock_stock,sku.sp_data sku_sp_data,
+          att.id att_id, att.product_id  att_product_id,   att.product_attribute_id att_product_attribute_id,att.value att_value
+        from pms_product p
+            left join pms_product_category pc on p.product_category_id = pc.id
+            left join pms_product_ladder l on p.id = l.product_id
+            left join pms_product_full_reduction pf on p.id = pf.product_id
+            left join pms_member_price m on p.id = m.product_id
+            left join pms_sku_stock sku on p.id = sku.product_id
+            left join pms_product_attribute_value att on p.id = att.product_id
+        where p.id = #{id}
+
+    </select>
+
+    <select id="selectSubjectProductRelationListByProductId" resultMap="com.cyf.malldemo.mbg.mapper.CmsSubjectProductRelationMapper.BaseResultMap">
+        select * from cms_subject_product_relation where product_id = #{productId}
+    </select>
+    <select id="selectPrefrenceAreaProductRelationListByProductId" resultMap="com.cyf.malldemo.mbg.mapper.CmsPrefrenceAreaProductRelationMapper.BaseResultMap">
+        select * from cms_prefrence_area_product_relation where product_id = #{productId}
+    </select>
+</mapper>

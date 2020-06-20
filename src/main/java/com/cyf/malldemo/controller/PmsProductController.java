@@ -4,6 +4,7 @@ import com.cyf.malldemo.common.CommonPage;
 import com.cyf.malldemo.common.CommonResult;
 import com.cyf.malldemo.dto.PmsProductParam;
 import com.cyf.malldemo.dto.PmsProductQueryParam;
+import com.cyf.malldemo.dto.PmsProductResult;
 import com.cyf.malldemo.mbg.model.PmsProduct;
 import com.cyf.malldemo.service.PmsProductService;
 import io.swagger.annotations.Api;
@@ -65,5 +66,12 @@ public class PmsProductController {
                                            @RequestParam("detail") String detail){
         int count = pmsProductService.updateVerifyStatus(ids, nverifyStatus, detail);
         return count > 0 ? CommonResult.success(count) : CommonResult.failed("操作失败");
+    }
+
+    @ApiOperation("根据id获取商品编辑")
+    @GetMapping("/update/{id}")
+    public CommonResult updateInfo(@PathVariable Long id){
+        PmsProductResult pmsProductResult = pmsProductService.getUpdateInfo(id);
+        return CommonResult.success(pmsProductResult);
     }
 }
