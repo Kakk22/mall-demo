@@ -21,7 +21,7 @@ public interface PmsProductService {
      * @param param
      * @return
      */
-    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     int create(PmsProductParam param);
 
 
@@ -31,7 +31,11 @@ public interface PmsProductService {
 
     int updateNewStatus(List<Long> ids, Integer newStatus);
 
+    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail);
 
     PmsProductResult getUpdateInfo(Long id);
+
+    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    int update(Long id, PmsProductParam param);
 }

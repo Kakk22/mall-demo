@@ -4,11 +4,8 @@ import com.cyf.malldemo.dao.*;
 import com.cyf.malldemo.dto.PmsProductParam;
 import com.cyf.malldemo.dto.PmsProductQueryParam;
 import com.cyf.malldemo.dto.PmsProductResult;
-import com.cyf.malldemo.mbg.mapper.PmsProductMapper;
-import com.cyf.malldemo.mbg.model.PmsProduct;
-import com.cyf.malldemo.mbg.model.PmsProductExample;
-import com.cyf.malldemo.mbg.model.PmsProductVertifyRecord;
-import com.cyf.malldemo.mbg.model.PmsSkuStock;
+import com.cyf.malldemo.mbg.mapper.*;
+import com.cyf.malldemo.mbg.model.*;
 import com.cyf.malldemo.service.PmsProductService;
 import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
@@ -23,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.PrimitiveIterator;
+import java.util.stream.Collectors;
 
 /**
  * @author by cyf
@@ -47,11 +44,25 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
     private CmsPrefrenceAreaProductRelationDao cmsPrefrenceAreaProductRelationDao;
     @Autowired
-    private PmsSkuStockDao pmsskuStockDao;
+    private PmsSkuStockDao pmsSkuStockDao;
     @Autowired
     private PmsProductVertifyRecordDao pmsProductVertifyRecordDao;
     @Autowired
     private PmsProductDao pmsProductDao;
+    @Autowired
+    private PmsProductLadderMapper pmsProductLadderMapper;
+    @Autowired
+    private PmsMemberPriceMapper pmsMemberPriceMapper;
+    @Autowired
+    private PmsSkuStockMapper pmsSkuStockMapper;
+    @Autowired
+    private PmsProductAttributeValueMapper pmsProductAttributeValueMapper;
+    @Autowired
+    private PmsProductFullReductionMapper pmsProductFullReductionMapper;
+    @Autowired
+    private CmsSubjectProductRelationMapper cmsSubjectProductRelationMapper;
+    @Autowired
+    private CmsPrefrenceAreaProductRelationMapper cmsPrefrenceAreaProductRelationMapper;
 
     @Override
     public int create(PmsProductParam param) {
@@ -78,7 +89,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         //处理sku的编码
         handleSkuStockCode(param.getSkuStockList(), productId);
         //添加sku库存信息
-        relationInsertList(pmsskuStockDao, param.getSkuStockList(), productId);
+        relationInsertList(pmsSkuStockDao, param.getSkuStockList(), productId);
         count = 1;
         return count;
     }
@@ -127,14 +138,14 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public int updateNewStatus(List<Long> ids, Integer newStatus) {
-       if (newStatus != 0 && newStatus != 1) {
+        if (newStatus != 0 && newStatus != 1) {
             return -1;
         }
         PmsProduct pmsProduct = new PmsProduct();
         pmsProduct.setNewStatus(newStatus);
         PmsProductExample example = new PmsProductExample();
         example.createCriteria().andIdIn(ids);
-        return pmsProductMapper.updateByExampleSelective(pmsProduct,example);
+        return pmsProductMapper.updateByExampleSelective(pmsProduct, example);
     }
 
     @Override
@@ -157,6 +168,98 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
         pmsProductVertifyRecordDao.insertList(list);
         return count;
+    }
+
+    @Override
+    public int update(Long id, PmsProductParam param) {
+        int count;
+        PmsProduct pmsProduct = param;
+        pmsProduct.setId(id);
+        pmsProductMapper.updateByPrimaryKey(pmsProduct);
+        //阶梯价格
+        PmsProductLadderExample ladderExample = new PmsProductLadderExample();
+        ladderExample.createCriteria().andProductIdEqualTo(id);
+        pmsProductLadderMapper.deleteByExample(ladderExample);
+        relationInsertList(pmsProductLadderDao, param.getProductLadderList(), id);
+        //会员价格
+        PmsMemberPriceExample memberPriceExample = new PmsMemberPriceExample();
+        memberPriceExample.createCriteria().andProductIdEqualTo(id);
+        pmsMemberPriceMapper.deleteByExample(memberPriceExample);
+        relationInsertList(pmsMemberPriceDao, param.getMemberPriceList(), id);
+        //满减价格
+        PmsProductFullReductionExample fullReductionExample = new PmsProductFullReductionExample();
+        fullReductionExample.createCriteria().andProductIdEqualTo(id);
+        pmsProductFullReductionMapper.deleteByExample(fullReductionExample);
+        relationInsertList(pmsProductFullReductionDao, param.getProductFullReductionList(), id);
+        //商品参数
+        PmsProductAttributeValueExample attributeValueExample = new PmsProductAttributeValueExample();
+        attributeValueExample.createCriteria().andProductIdEqualTo(id);
+        pmsProductAttributeValueMapper.deleteByExample(attributeValueExample);
+        relationInsertList(pmsProductAttributeValueDao, param.getProductAttributeValueList(), id);
+        //修改库存信息
+        handleUpdateSkuStockList(id, param);
+        //关联专题
+        CmsSubjectProductRelationExample cmsSubjectProductRelationExample = new CmsSubjectProductRelationExample();
+        cmsSubjectProductRelationExample.createCriteria().andProductIdEqualTo(id);
+        cmsSubjectProductRelationMapper.deleteByExample(cmsSubjectProductRelationExample);
+        relationInsertList(cmsSubjectProductRelationDao, param.getSubjectProductRelationList(), id);
+        //关联专区
+        CmsPrefrenceAreaProductRelationExample areaProductRelationExample = new CmsPrefrenceAreaProductRelationExample();
+        areaProductRelationExample.createCriteria().andProductIdEqualTo(id);
+        cmsPrefrenceAreaProductRelationMapper.deleteByExample(areaProductRelationExample);
+        relationInsertList(cmsPrefrenceAreaProductRelationDao, param.getPrefrenceAreaProductRelationList(), id);
+        count = 1;
+        return count;
+    }
+
+    /**
+     * 处理更新的skuStock
+     *
+     * @param id
+     * @param param
+     */
+    private void handleUpdateSkuStockList(Long id, PmsProductParam param) {
+        //当前的sku信息
+        List<PmsSkuStock> currSkuList = param.getSkuStockList();
+        //如果sku信息为空，则全部删除
+        if (CollectionUtils.isEmpty(currSkuList)) {
+            PmsSkuStockExample skuStockExample = new PmsSkuStockExample();
+            skuStockExample.createCriteria().andProductIdEqualTo(id);
+            pmsSkuStockMapper.deleteByExample(skuStockExample);
+            return;
+        }
+        //初始化sku信息
+        PmsSkuStockExample skuStockExample = new PmsSkuStockExample();
+        skuStockExample.createCriteria().andProductIdEqualTo(id);
+        List<PmsSkuStock> oriSkuList = pmsSkuStockMapper.selectByExample(skuStockExample);
+        //查询新增的sku信息
+        List<PmsSkuStock> insertSkuList = currSkuList.stream().filter(item -> item.getId() == null).collect(Collectors.toList());
+        //查询更新的sku信息,及更新的id
+        List<PmsSkuStock> updateSukList = currSkuList.stream().filter(item -> item.getId() != null).collect(Collectors.toList());
+        List<Long> updateSukIds = updateSukList.stream().map(PmsSkuStock::getId).collect(Collectors.toList());
+        //查询删除的sku
+        List<PmsSkuStock> delSkuList = oriSkuList.stream().filter(item -> !updateSukIds.contains(item.getId())).collect(Collectors.toList());
+        //生成sku码
+        handleSkuStockCode(insertSkuList,id);
+        handleSkuStockCode(updateSukList,id);
+        //新增sku
+        if (!CollectionUtils.isEmpty(insertSkuList)){
+            relationInsertList(pmsSkuStockMapper,insertSkuList,id);
+        }
+        //更新sku
+        if (!CollectionUtils.isEmpty(updateSukList)){
+            for (PmsSkuStock pmsSkuStock : updateSukList) {
+                //根据id更新，不一样的数据才跟新
+                pmsSkuStockMapper.updateByPrimaryKeySelective(pmsSkuStock);
+            }
+        }
+        //删除sku
+        if (!CollectionUtils.isEmpty(delSkuList)){
+            List<Long> ids = delSkuList.stream().map(PmsSkuStock::getId).collect(Collectors.toList());
+            PmsSkuStockExample example = new PmsSkuStockExample();
+            example.createCriteria().andIdIn(ids);
+            pmsSkuStockMapper.deleteByExample(example);
+        }
     }
 
     /**
@@ -187,6 +290,7 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     /**
      * 根据商品id返回编辑数据
+     *
      * @param id 商品id
      * @return
      */

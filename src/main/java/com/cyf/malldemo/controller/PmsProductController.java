@@ -61,7 +61,7 @@ public class PmsProductController {
 
     @ApiOperation("更新审核状态")
     @PostMapping("/update/verifyStatus")
-    public CommonResult updateverifyStatus(@RequestParam("ids") List<Long> ids,
+    public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
                                            @RequestParam("verifyStatus") Integer nverifyStatus,
                                            @RequestParam("detail") String detail){
         int count = pmsProductService.updateVerifyStatus(ids, nverifyStatus, detail);
@@ -69,9 +69,18 @@ public class PmsProductController {
     }
 
     @ApiOperation("根据id获取商品编辑")
-    @GetMapping("/update/{id}")
+    @GetMapping("/updateInfo/{id}")
     public CommonResult updateInfo(@PathVariable Long id){
         PmsProductResult pmsProductResult = pmsProductService.getUpdateInfo(id);
         return CommonResult.success(pmsProductResult);
     }
+
+    @ApiOperation("根据id获取商品编辑")
+    @PostMapping("/update/{id}")
+    public CommonResult update(@PathVariable Long id,
+                               @RequestBody PmsProductParam param){
+        int count = pmsProductService.update(id,param);
+        return CommonResult.success(count);
+    }
+
 }
