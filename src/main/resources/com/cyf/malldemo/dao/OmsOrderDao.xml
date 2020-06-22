@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyf.malldemo.dao.OmsOrderDao">
+
+    <select id="getList" resultMap="com.cyf.malldemo.mbg.mapper.OmsOrderMapper.BaseResultMap">
+        select *
+        from
+        oms_order
+        where
+        delete_status = 0
+        <if test="queryParam.orderSn!=null and queryParam.orderSn !=''">
+            and order_sn = #{queryParam.orderSn}
+        </if>
+        <if test="queryParam.receiverKeyword !=null and queryParam.receiverKeyword !=''">
+            and (
+              receiver_name like concat("%",#{queryParam.receiverKeyword},"%")
+            or receiver_phone like concat("%",#{queryParam.receiverKeyword},"%")
+            )
+        </if>
+        <if test="queryParam.status != null">
+            and status = #{queryParam.status}
+        </if>
+        <if test="queryParam.orderType != null">
+            and order_type = #{queryParam.orderType}
+        </if>
+        <if test="queryParam.sourceType != null">
+            and source_type = #{queryParam.sourceType}
+        </if>
+        <if test="queryParam.createTime != null and queryParam.createTime != ''">
+            and create_time like concat("%",#{queryParam.createTime},"%")
+        </if>
+    </select>
+</mapper>
