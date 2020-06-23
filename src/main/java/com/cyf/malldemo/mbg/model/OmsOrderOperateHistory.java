@@ -1,6 +1,7 @@
 package com.cyf.malldemo.mbg.model;
 
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 

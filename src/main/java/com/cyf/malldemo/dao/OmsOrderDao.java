@@ -1,6 +1,7 @@
 package com.cyf.malldemo.dao;
 
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
+import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
 import com.cyf.malldemo.mbg.model.OmsOrder;
 import org.apache.ibatis.annotations.Param;
@@ -21,4 +22,6 @@ public interface OmsOrderDao {
      * @return
      */
     int delivery(@Param("list") List<OmsOrderDeliveryParam>  list);
+
+    OmsOrderDetail detail(@Param("id") Long id);
 }

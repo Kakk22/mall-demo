@@ -3,6 +3,7 @@ package com.cyf.malldemo.service.impl;
 import com.cyf.malldemo.dao.OmsOrderDao;
 import com.cyf.malldemo.dao.OmsOrderOperateHistoryDao;
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
+import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
 import com.cyf.malldemo.mbg.mapper.OmsOrderMapper;
 import com.cyf.malldemo.mbg.model.OmsOrder;
@@ -83,5 +84,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         }).collect(Collectors.toList());
         omsOrderOperateHistoryDao.insertList(historyList);
         return count;
+    }
+
+    @Override
+    public OmsOrderDetail detail(Long id) {
+        return omsOrderDao.detail(id);
     }
 }

@@ -3,6 +3,7 @@ package com.cyf.malldemo.controller;
 import com.cyf.malldemo.common.CommonPage;
 import com.cyf.malldemo.common.CommonResult;
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
+import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
 import com.cyf.malldemo.mbg.model.OmsOrder;
 import com.cyf.malldemo.service.OmsOrderService;
@@ -53,5 +54,12 @@ public class OmsOrderController {
     public CommonResult delivery(@RequestBody List<OmsOrderDeliveryParam> params){
         int  count = omsOrderService.delivery(params);
         return count > 0? CommonResult.success(count) : CommonResult.failed("操作失败");
+    }
+
+    @ApiOperation("查询订单详细：订单信息，商品信息，操作记录")
+    @PostMapping("{id}")
+    public CommonResult detail(@PathVariable Long id){
+        OmsOrderDetail omsOrderDetail = omsOrderService.detail(id);
+        return CommonResult.success(omsOrderDetail);
     }
 }

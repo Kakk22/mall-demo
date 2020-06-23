@@ -1,6 +1,7 @@
 package com.cyf.malldemo.service;
 
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
+import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
 import com.cyf.malldemo.mbg.model.OmsOrder;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,4 +21,6 @@ public interface OmsOrderService {
     int close(List<Long> ids, String note);
     @Transactional
     int delivery(List<OmsOrderDeliveryParam> params);
+
+    OmsOrderDetail detail(Long id);
 }
