@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.mbg.model.UmsMember;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,4 +37,6 @@ public interface UmsMemberService {
      * @return
      */
     String login(String username,String password);
+
+    UmsMember getCurrentMember();
 }

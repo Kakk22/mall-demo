@@ -1,6 +1,7 @@
 package com.cyf.malldemo.service.impl;
 
 
+import cn.hutool.http.HttpRequest;
 import com.alibaba.druid.util.StringUtils;
 import com.cyf.malldemo.common.exception.Asserts;
 import com.cyf.malldemo.common.utils.JWTtokenUtil;
@@ -18,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -156,5 +159,17 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             LOGGER.warn("登录异常 : {}",e.getMessage());
         }
         return token;
+    }
+
+    /**
+     * 获取当前登录会员
+     * @return
+     */
+    @Override
+    public UmsMember getCurrentMember() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        UmsMemberDetails umsMemberDetails = (UmsMemberDetails)authentication.getPrincipal();
+        return umsMemberDetails.getUmsMember();
     }
 }
