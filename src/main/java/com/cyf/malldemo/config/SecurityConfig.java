@@ -3,10 +3,8 @@ package com.cyf.malldemo.config;
 import com.cyf.malldemo.component.JwtAuthenticationTokenFilter;
 import com.cyf.malldemo.component.RestAuthenticationEntryPoint;
 import com.cyf.malldemo.component.RestfulAccessDeniedHandler;
-import com.cyf.malldemo.dto.AdminUserDetails;
-import com.cyf.malldemo.mbg.model.UmsAdmin;
-import com.cyf.malldemo.mbg.model.UmsPermission;
 import com.cyf.malldemo.service.UmsAdminService;
+import com.cyf.malldemo.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +17,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.List;
 
 /**
  * @author by cyf
@@ -36,6 +31,8 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UmsAdminService adminService;
+    @Autowired
+    private UmsMemberService umsMemberService;
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
     @Autowired
@@ -92,7 +89,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
-        return username -> adminService.loadUserByUsername(username);
+        //return username -> adminService.loadUserByUsername(username);
+        //会员登录
+        return username -> umsMemberService.loadUserByUsername(username);
     }
 
     @Bean

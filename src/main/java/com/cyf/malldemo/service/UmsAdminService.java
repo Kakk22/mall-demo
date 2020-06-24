@@ -4,7 +4,6 @@ import com.cyf.malldemo.dto.UpdateAdminPasswordParam;
 import com.cyf.malldemo.mbg.model.UmsAdmin;
 import com.cyf.malldemo.mbg.model.UmsPermission;
 import com.cyf.malldemo.mbg.model.UmsResource;
-import com.cyf.malldemo.mbg.model.UmsRole;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -61,4 +60,6 @@ public interface UmsAdminService {
      * @return
      */
     int updatePassword(UpdateAdminPasswordParam updateAdminPasswordParam);
+
+
 }
