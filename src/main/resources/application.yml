@@ -34,10 +34,10 @@ mybatis:
 redis:
   database: mall
   key:
-    prefix:
-      authCode: "portal:authCode:"
+    authCode: "ums:authCode:"
     admin: 'ums:admin'
     resourceList: 'ums:resource'
+    member: 'ums:member'
   expire:
     authCode: 120 # 验证码超期时间
     common: 86400 #24小时

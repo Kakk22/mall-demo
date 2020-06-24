@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.dto.MoneyInfoParam;
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
 import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
@@ -23,4 +24,6 @@ public interface OmsOrderService {
     int delivery(List<OmsOrderDeliveryParam> params);
 
     OmsOrderDetail detail(Long id);
+    @Transactional
+    int UpdateMoneyInfo(MoneyInfoParam param);
 }

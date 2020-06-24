@@ -2,10 +2,12 @@ package com.cyf.malldemo.service.impl;
 
 import com.cyf.malldemo.dao.OmsOrderDao;
 import com.cyf.malldemo.dao.OmsOrderOperateHistoryDao;
+import com.cyf.malldemo.dto.MoneyInfoParam;
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
 import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
 import com.cyf.malldemo.mbg.mapper.OmsOrderMapper;
+import com.cyf.malldemo.mbg.mapper.OmsOrderOperateHistoryMapper;
 import com.cyf.malldemo.mbg.model.OmsOrder;
 import com.cyf.malldemo.mbg.model.OmsOrderExample;
 import com.cyf.malldemo.mbg.model.OmsOrderOperateHistory;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author by cyf
@@ -31,6 +32,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsOrderDao omsOrderDao;
     @Autowired
     private OmsOrderOperateHistoryDao omsOrderOperateHistoryDao;
+    @Autowired
+    private OmsOrderOperateHistoryMapper omsOrderOperateHistoryMapper;
 
     @Override
     public List<OmsOrder> getList(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
@@ -83,6 +86,25 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             return history;
         }).collect(Collectors.toList());
         omsOrderOperateHistoryDao.insertList(historyList);
+        return count;
+    }
+
+    @Override
+    public int UpdateMoneyInfo(MoneyInfoParam param) {
+        OmsOrder omsOrder = new OmsOrder();
+        omsOrder.setId(param.getOrderId());
+        omsOrder.setModifyTime(new Date());
+        omsOrder.setFreightAmount(param.getFreightAmount());
+        omsOrder.setDiscountAmount(param.getDiscountAmount());
+        int count =omsOrderMapper.updateByPrimaryKeySelective(omsOrder);
+        //插入操作记录
+        OmsOrderOperateHistory history = new OmsOrderOperateHistory();
+        history.setCreateTime(new Date());
+        history.setOrderId(param.getOrderId());
+        history.setOrderStatus(param.getStatus());
+        history.setOperateMan("admin");
+        history.setNote("updateMoneyInfo");
+        omsOrderOperateHistoryMapper.insert(history);
         return count;
     }
 

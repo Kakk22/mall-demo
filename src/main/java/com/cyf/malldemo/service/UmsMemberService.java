@@ -1,7 +1,5 @@
 package com.cyf.malldemo.service;
 
-import com.cyf.malldemo.common.CommonResult;
-
 /**
  * @author by cyf
  * @date 2020/5/16.
@@ -13,15 +11,16 @@ public interface UmsMemberService {
      * @param telephone
      * @return
      */
-    CommonResult generateAuthCode(String telephone);
+    String generateAuthCode(String telephone);
 
     /**
-     * 校验验证码
-     * @param telePhone
-     * @param code
-     * @return
+     * 会员注册
+     * @param username 用户名
+     * @param password 密码
+     * @param telephone 手机号码
+     * @param authCode 验证码
      */
-    CommonResult verifyAuthCode(String telePhone,String code);
+    void register(String username,String password,String telephone,String authCode);
 
 
 

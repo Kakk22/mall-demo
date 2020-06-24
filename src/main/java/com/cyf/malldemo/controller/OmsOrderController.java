@@ -2,6 +2,7 @@ package com.cyf.malldemo.controller;
 
 import com.cyf.malldemo.common.CommonPage;
 import com.cyf.malldemo.common.CommonResult;
+import com.cyf.malldemo.dto.MoneyInfoParam;
 import com.cyf.malldemo.dto.OmsOrderDeliveryParam;
 import com.cyf.malldemo.dto.OmsOrderDetail;
 import com.cyf.malldemo.dto.OmsOrderQueryParam;
@@ -62,4 +63,12 @@ public class OmsOrderController {
         OmsOrderDetail omsOrderDetail = omsOrderService.detail(id);
         return CommonResult.success(omsOrderDetail);
     }
+
+    @ApiOperation("修改订单价格")
+    @PostMapping("update/moneyInfo")
+    public CommonResult UpdateMoneyInfo(@RequestBody MoneyInfoParam param){
+        int count = omsOrderService.UpdateMoneyInfo(param);
+        return count > 0? CommonResult.success(count) : CommonResult.failed("操作失败");
+    }
+
 }
