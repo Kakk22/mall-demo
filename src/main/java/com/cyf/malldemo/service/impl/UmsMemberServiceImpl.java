@@ -1,7 +1,6 @@
 package com.cyf.malldemo.service.impl;
 
 
-import cn.hutool.http.HttpRequest;
 import com.alibaba.druid.util.StringUtils;
 import com.cyf.malldemo.common.exception.Asserts;
 import com.cyf.malldemo.common.utils.JWTtokenUtil;
