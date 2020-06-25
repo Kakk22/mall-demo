@@ -58,4 +58,14 @@ public class UmsMemberController {
         return CommonResult.success(map);
     }
 
+
+    @ApiOperation("修改密码")
+    @PostMapping("/updatePassword")
+    public CommonResult register(@RequestParam String password,
+                                 @RequestParam String telephone,
+                                 @RequestParam String authCode){
+        umsMemberService.updatePassword(telephone,password,authCode);
+        return CommonResult.success("改修成功");
+    }
+
 }

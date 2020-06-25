@@ -171,4 +171,22 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         UmsMemberDetails umsMemberDetails = (UmsMemberDetails)authentication.getPrincipal();
         return umsMemberDetails.getUmsMember();
     }
+
+    @Override
+    public void updatePassword(String telephone, String password, String authCode) {
+        UmsMemberExample memberExample = new UmsMemberExample();
+        memberExample.createCriteria().andPhoneEqualTo(telephone);
+        List<UmsMember> umsMemberList = umsMemberMapper.selectByExample(memberExample);
+        if (CollectionUtils.isEmpty(umsMemberList)){
+            Asserts.fail("用户不存在");
+        }
+        if (!verifyAuthCode(telephone,authCode)){
+            Asserts.fail("验证码错误");
+        }
+        UmsMember member = umsMemberList.get(0);
+        member.setPassword(passwordEncoder.encode(password));
+        umsMemberMapper.updateByPrimaryKeySelective(member);
+        //删除缓存
+        umsMemberCacheService.delMember(member.getId());
+    }
 }

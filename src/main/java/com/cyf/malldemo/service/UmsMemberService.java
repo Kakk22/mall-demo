@@ -39,4 +39,6 @@ public interface UmsMemberService {
     String login(String username,String password);
 
     UmsMember getCurrentMember();
+    @Transactional
+    void updatePassword(String telephone,String password,String authCode);
 }
