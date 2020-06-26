@@ -59,4 +59,23 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         }
         return null;
     }
+
+    @Override
+    public int delete(Long memberId, List<Long> ids) {
+        OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setDeleteStatus(1);
+        OmsCartItemExample example = new OmsCartItemExample();
+        example.createCriteria().andMemberIdEqualTo(memberId).andIdIn(ids);
+        int count = omsCartItemMapper.updateByExampleSelective(omsCartItem, example);
+        return count;
+    }
+
+    @Override
+    public int clear(Long memberId) {
+        OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setDeleteStatus(1);
+        OmsCartItemExample example = new OmsCartItemExample();
+        example.createCriteria().andMemberIdEqualTo(memberId);
+        return omsCartItemMapper.updateByExampleSelective(omsCartItem,example);
+    }
 }
