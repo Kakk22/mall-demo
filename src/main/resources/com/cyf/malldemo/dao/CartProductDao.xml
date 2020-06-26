@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyf.malldemo.dao.CartProductDao">
+    <resultMap id="cartProductMap" type="com.cyf.malldemo.dto.CartProduct"
+               extends="com.cyf.malldemo.mbg.mapper.PmsProductMapper.BaseResultMap">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <collection property="productAttributeList"
+                    resultMap="com.cyf.malldemo.mbg.mapper.PmsProductAttributeMapper.BaseResultMap"
+                    columnPrefix="att_"></collection>
+        <collection property="skuStockList" resultMap="com.cyf.malldemo.mbg.mapper.PmsSkuStockMapper.BaseResultMap"
+                    columnPrefix="sku_"></collection>
+    </resultMap>
+
+    <select id="getProduct" resultMap="cartProductMap">
+        select
+          p.id id,
+          p.name name,
+          p.product_attribute_category_id productAttributeCategoryId,
+          p.pic pic,
+          p.price price,
+          p.sub_title subTitle,
+          p.stock stock,
+          pa.id att_id,
+          pa.name att_name,
+          s.id sku_id,
+          s.price sku_price,
+          s.stock sku_stock
+        from
+          pms_product p
+          left join pms_product_attribute pa on p.product_attribute_category_id = pa.product_attribute_category_id
+          left join pms_sku_stock s on p.id = s.product_id
+        where p.id = #{id}
+          and pa.type = 0
+        ORDER BY pa.sort desc
+    </select>
+</mapper>

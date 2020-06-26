@@ -1,5 +1,7 @@
 package com.cyf.malldemo.service.impl;
 
+import com.cyf.malldemo.dao.CartProductDao;
+import com.cyf.malldemo.dto.CartProduct;
 import com.cyf.malldemo.mbg.mapper.OmsCartItemMapper;
 import com.cyf.malldemo.mbg.model.OmsCartItem;
 import com.cyf.malldemo.mbg.model.OmsCartItemExample;
@@ -23,6 +25,9 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     private UmsMemberService umsMemberService;
     @Autowired
     private OmsCartItemMapper omsCartItemMapper;
+    @Autowired
+    private CartProductDao cartProductDao;
+
     @Override
     public int add(OmsCartItem omsCartItem) {
         int count;
@@ -33,11 +38,11 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         omsCartItem.setDeleteStatus(0);
         //根据会员id 商品名称 ，skuId查询是否有相同的商品
         OmsCartItem existCartItem = getCartItem(omsCartItem);
-        if (existCartItem == null){
+        if (existCartItem == null) {
             //为空
             omsCartItem.setCreateDate(new Date());
             count = omsCartItemMapper.insert(omsCartItem);
-        }else {
+        } else {
             //不为空
             existCartItem.setModifyDate(new Date());
             existCartItem.setQuantity(existCartItem.getQuantity() + omsCartItem.getQuantity());
@@ -49,12 +54,12 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     private OmsCartItem getCartItem(OmsCartItem cartItem) {
         OmsCartItemExample omsCartItemExample = new OmsCartItemExample();
         omsCartItemExample.createCriteria().andMemberIdEqualTo(cartItem.getMemberId())
-                                           .andProductIdEqualTo(cartItem.getProductId());
-        if (cartItem.getProductSkuId()!=null){
+                .andProductIdEqualTo(cartItem.getProductId());
+        if (cartItem.getProductSkuId() != null) {
             omsCartItemExample.createCriteria().andProductSkuIdEqualTo(cartItem.getProductSkuId());
         }
         List<OmsCartItem> itemList = omsCartItemMapper.selectByExample(omsCartItemExample);
-        if (!CollectionUtils.isEmpty(itemList)){
+        if (!CollectionUtils.isEmpty(itemList)) {
             return itemList.get(0);
         }
         return null;
@@ -76,6 +81,30 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         omsCartItem.setDeleteStatus(1);
         OmsCartItemExample example = new OmsCartItemExample();
         example.createCriteria().andMemberIdEqualTo(memberId);
-        return omsCartItemMapper.updateByExampleSelective(omsCartItem,example);
+        return omsCartItemMapper.updateByExampleSelective(omsCartItem, example);
+    }
+
+    @Override
+    public List<OmsCartItem> list(Long memberId) {
+        OmsCartItemExample example = new OmsCartItemExample();
+        example.createCriteria().andMemberIdEqualTo(memberId);
+        List<OmsCartItem> itemList = omsCartItemMapper.selectByExample(example);
+        return itemList;
+    }
+
+    @Override
+    public int updateQuantity(Long memberId, Long id, Integer quantity) {
+        OmsCartItem omsCartItem = new OmsCartItem();
+        omsCartItem.setQuantity(quantity);
+        OmsCartItemExample example = new OmsCartItemExample();
+        example.createCriteria().andMemberIdEqualTo(memberId)
+                                .andIdEqualTo(id)
+                                .andDeleteStatusEqualTo(0);
+        return omsCartItemMapper.updateByExampleSelective(omsCartItem, example);
+    }
+
+    @Override
+    public CartProduct getProduct(Long productId) {
+        return cartProductDao.getProduct(productId);
     }
 }

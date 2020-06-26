@@ -1,5 +1,6 @@
 package com.cyf.malldemo.service;
 
+import com.cyf.malldemo.dto.CartProduct;
 import com.cyf.malldemo.mbg.model.OmsCartItem;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,4 +33,10 @@ public interface OmsCartItemService {
      * @return 操作了多少条数据
      */
     int clear(Long memberId);
+
+    List<OmsCartItem> list(Long memberId);
+
+    int updateQuantity(Long memberId,Long id,Integer quantity);
+
+    CartProduct getProduct(Long productId);
 }

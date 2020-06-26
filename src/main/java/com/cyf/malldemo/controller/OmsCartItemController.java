@@ -1,6 +1,7 @@
 package com.cyf.malldemo.controller;
 
 import com.cyf.malldemo.common.CommonResult;
+import com.cyf.malldemo.dto.CartProduct;
 import com.cyf.malldemo.mbg.model.OmsCartItem;
 import com.cyf.malldemo.service.OmsCartItemService;
 import com.cyf.malldemo.service.UmsMemberService;
@@ -43,5 +44,26 @@ public class OmsCartItemController {
     public CommonResult add(@RequestParam List<Long> ids) {
         int count = omsCartItemService.delete(umsMemberService.getCurrentMember().getId(),ids);
         return count > 0 ? CommonResult.success(count) : CommonResult.failed("删除失败");
+    }
+
+    @ApiOperation(value = "获取会员的购物车列表")
+    @GetMapping("/list")
+    public CommonResult list() {
+        List<OmsCartItem> list = omsCartItemService.list(umsMemberService.getCurrentMember().getId());
+        return CommonResult.success(list);
+    }
+
+    @ApiOperation(value = "更新购物车商品数量")
+    @PostMapping("/updateQuantity")
+    public CommonResult updateQuantity(@RequestParam Long id,@RequestParam Integer quantity) {
+        int count = omsCartItemService.updateQuantity(umsMemberService.getCurrentMember().getId(),id,quantity);
+        return count > 0 ? CommonResult.success(count) : CommonResult.failed("操作失败");
+    }
+
+    @ApiOperation(value = "获取购物车中某个商品的规格，用于重选")
+    @GetMapping("/getProduct/{productId}")
+    public CommonResult getProduct(@PathVariable Long productId) {
+        CartProduct product = omsCartItemService.getProduct(productId);
+        return CommonResult.success(product);
     }
 }
