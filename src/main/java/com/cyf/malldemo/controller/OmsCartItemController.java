@@ -66,4 +66,11 @@ public class OmsCartItemController {
         CartProduct product = omsCartItemService.getProduct(productId);
         return CommonResult.success(product);
     }
+
+    @ApiOperation(value = "修改商品的规格")
+    @PostMapping("/updateArr")
+    public CommonResult updateArr(@RequestBody OmsCartItem omsCartItem) {
+        int count = omsCartItemService.updateArr(omsCartItem);
+        return count > 0 ? CommonResult.success(count) : CommonResult.failed("操作失败");
+    }
 }

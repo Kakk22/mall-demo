@@ -13,6 +13,7 @@ import java.util.List;
 public interface OmsCartItemService {
     /**
      * 添加购物车
+     *
      * @param omsCartItem
      * @return
      */
@@ -21,14 +22,16 @@ public interface OmsCartItemService {
 
     /**
      * 批量删除购物车中的商品
+     *
      * @param memberId memberId
-     * @param ids cartItem id
+     * @param ids      cartItem id
      * @return 操作了多少条数据
      */
     int delete(Long memberId, List<Long> ids);
 
     /**
      * 清空购物车
+     *
      * @param memberId 会员id
      * @return 操作了多少条数据
      */
@@ -36,7 +39,10 @@ public interface OmsCartItemService {
 
     List<OmsCartItem> list(Long memberId);
 
-    int updateQuantity(Long memberId,Long id,Integer quantity);
+    int updateQuantity(Long memberId, Long id, Integer quantity);
 
     CartProduct getProduct(Long productId);
+
+    @Transactional(rollbackFor = Exception.class)
+    int updateArr(OmsCartItem omsCartItem);
 }

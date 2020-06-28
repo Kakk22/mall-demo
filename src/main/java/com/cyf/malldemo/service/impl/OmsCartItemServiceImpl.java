@@ -107,4 +107,18 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     public CartProduct getProduct(Long productId) {
         return cartProductDao.getProduct(productId);
     }
+
+    @Override
+    public int updateArr(OmsCartItem omsCartItem) {
+        //更新商品规格信息，删除原来重新添加
+        OmsCartItem updateCart = new OmsCartItem();
+        updateCart.setId(omsCartItem.getId());
+        updateCart.setModifyDate(new Date());
+        updateCart.setDeleteStatus(1);
+        omsCartItemMapper.updateByPrimaryKeySelective(updateCart);
+        //重新添加
+        omsCartItem.setId(null);
+        int count = add(omsCartItem);
+        return count;
+    }
 }
