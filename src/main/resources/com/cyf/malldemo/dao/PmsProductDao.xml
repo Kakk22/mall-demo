@@ -21,10 +21,10 @@
           p.*,
           pc.parent_id cateParentId,
           l.id ladder_id,l.product_id ladder_product_id,l.count ladder_count,l.discount ladder_discount,l.price ladder_price,
-          pf.id  full_id, pf.product_id  full_product_id,  pf.full_price full_full_price,pf.reduce_price full_reduce_price,
+          pf.id  full_id, pf.product_id  full_product_id, pf.full_price full_full_price,pf.reduce_price full_reduce_price,
           m.id   member_id,m.product_id  member_product_id,m.member_level_id member_member_level_id,m.member_price member_member_price,m.member_level_name member_member_level_name,
-          sku.id sku_id, sku.product_id  sku_product_id,   sku.sku_code sku_sku_code,sku.price sku_price,sku.stock sku_stock,sku.low_stock sku_low_stock,sku.pic sku_pic,sku.sale sku_sale,sku.promotion_price sku_promotion_price,sku.lock_stock sku_lock_stock,sku.sp_data sku_sp_data,
-          att.id att_id, att.product_id  att_product_id,   att.product_attribute_id att_product_attribute_id,att.value att_value
+          sku.id sku_id, sku.product_id  sku_product_id, sku.sku_code sku_sku_code,sku.price sku_price,sku.stock sku_stock,sku.low_stock sku_low_stock,sku.pic sku_pic,sku.sale sku_sale,sku.promotion_price sku_promotion_price,sku.lock_stock sku_lock_stock,sku.sp_data sku_sp_data,
+          att.id att_id, att.product_id  att_product_id, att.product_attribute_id att_product_attribute_id,att.value att_value
         from pms_product p
             left join pms_product_category pc on p.product_category_id = pc.id
             left join pms_product_ladder l on p.id = l.product_id
