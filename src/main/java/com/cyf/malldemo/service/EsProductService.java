@@ -42,7 +42,7 @@ public interface EsProductService {
      * @param pageSize
      * @return
      */
-    Page<EsProduct> serach(String keywords,Integer pageNum,Integer pageSize);
+    Page<EsProduct> search(String keywords,Integer pageNum,Integer pageSize);
 
     /**
      * 根据关键字搜索名称或者副标题复合查询

@@ -14,32 +14,32 @@
 
     <select id="getAllEsProductList" resultMap="EsProductListMap">
         select
-            p.product_sn productSn
-            p.brand_id brandId
-            p.brand_name brandName
-            p.product_Category_id productCategoryId
-            p.product_Category_name productCategoryName
-            p.pic  pic
-            p.name `name`
-            p.sub_title subTitle
-            p.keywords keywords
-            p.price price
-            p.sale sale
-            p.new_status newStatus
-            p.recommand_status recommandStatus
-            p.stock stock
-            p.promotion_type promotionType
-            p.sort sort
-            pav.id att_id
-            pav.product_attribute_id att_productAttributeId
-            pav.value att_value
-            pa.name att_name
+            p.product_sn productSn,
+            p.brand_id brandId,
+            p.brand_name brandName,
+            p.product_Category_id productCategoryId,
+            p.product_Category_name productCategoryName,
+            p.pic  pic,
+            p.name `name`,
+            p.sub_title subTitle,
+            p.keywords keywords,
+            p.price price,
+            p.sale sale,
+            p.new_status newStatus,
+            p.recommand_status recommandStatus,
+            p.stock stock,
+            p.promotion_type promotionType,
+            p.sort sort,
+            pav.id att_id,
+            pav.product_attribute_id att_productAttributeId,
+            pav.value att_value,
+            pa.name att_name,
             pa.type att_type
         from pms_product p
-            left join pms_product_attribute_value pav on p.id = pa.product_id
+            left join pms_product_attribute_value pav on p.id = pav.product_id
             left join pms_product_attribute pa on pav.product_attribute_id = pa.id
         where
-        p.delete_status = 0 and public_status = 1
+        p.delete_status = 0 and p.publish_status = 1
         <if test="id!=null">
           and p.id = #{id}
         </if>

@@ -6,14 +6,20 @@ import com.cyf.malldemo.repository.EsProductRepository;
 import com.cyf.malldemo.service.EsProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author by cyf
  * @date 2020/8/3.
  */
+@Service
 public class EsProductServiceImpl implements EsProductService {
 
     @Autowired
@@ -37,7 +43,7 @@ public class EsProductServiceImpl implements EsProductService {
 
     @Override
     public void delete(Long id) {
-
+        esProductRepository.deleteById(id);
     }
 
     @Override
@@ -47,12 +53,21 @@ public class EsProductServiceImpl implements EsProductService {
 
     @Override
     public void delete(List<Long> ids) {
-
+        if (!CollectionUtils.isEmpty(ids)){
+            List<EsProduct> collect = ids.stream().map(id -> {
+                EsProduct esProduct = new EsProduct();
+                esProduct.setId(id);
+                return esProduct;
+            }).collect(Collectors.toList());
+            //删除所有EsProduct 对象
+            esProductRepository.deleteAll(collect);
+        }
     }
 
     @Override
-    public Page<EsProduct> serach(String keywords, Integer pageNum, Integer pageSize) {
-        return null;
+    public Page<EsProduct> search(String keywords, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        return esProductRepository.findByNameOrSubTitleOrKeywords(keywords, keywords, keywords, pageable);
     }
 
     @Override
