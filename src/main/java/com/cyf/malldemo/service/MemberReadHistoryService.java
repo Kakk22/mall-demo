@@ -8,7 +8,7 @@ import java.util.List;
  * @author by cyf
  * @date 2020/8/6.
  */
-public interface MemberReadHistroyService {
+public interface MemberReadHistoryService {
 
     /**
      * 生成浏览记录
