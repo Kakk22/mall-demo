@@ -59,17 +59,5 @@ jwt:
   expiration: 604800 #JWT的超期限时间(60*60*24)
   tokenHead: Bearer #JWT负载中拿到开头
 
-#OOS 相关配置
-aliyun:
-  oss:
-    endpoint: oss-cn-beijing.aliyuncs.com #oss对外服务的访问域名
-    accessKeyId: LTAI4G3ZidYpwr9J2aFEf6ry
-    accessKeySecret: loMVrgHyRbNN3fuUFGra5pz7l5M2JE
-    bucketName: mall-cyf
-    policy:
-      expire: 300
-    maxSize: 10
-    callback: http://61.140.229.225:8080/aliyun/oss/callback #文件上传后的回调接口
-    dir:
-      prefix: mall/images/ #上传文件夹路径前缀
+
 debug: true
