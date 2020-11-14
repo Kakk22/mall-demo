@@ -1,5 +1,6 @@
 package com.cyf.malldemo.domain;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -9,23 +10,26 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**搜索中的商品信息
+/**
+ * 搜索中的商品信息
  * 标示映射到Elasticsearch文档上的领域对象
  * public @interface Document {
- *   索引库名次，mysql中数据库的概念
- *     String indexName();
- *   文档类型，mysql中表的概念
- *     String type() default "";
- *   默认分片数
- *     short shards() default 5;
- *   默认副本数量
- *     short replicas() default 1;
- *
+ * 索引库名次，mysql中数据库的概念
+ * String indexName();
+ * 文档类型，mysql中表的概念
+ * *     String type() default "";
+ * 默认分片数
+ * short shards() default 5;
+ * 默认副本数量
+ * short replicas() default 1;
+ * <p>
  * }
+ *
  * @author by cyf
  * @date 2020/8/3.
  */
-@Document(indexName = "pms",type = "product",shards = 1,replicas = 0)
+@Document(indexName = "pms", type = "product", shards = 1, replicas = 0)
+@Data
 public class EsProduct implements Serializable {
     public static final long serialVersionUID = -1L;
 
@@ -40,11 +44,11 @@ public class EsProduct implements Serializable {
     @Field(type = FieldType.Keyword)
     private String productCategoryName;
     private String pic;
-    @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @Field(analyzer = "ik_max_word", type = FieldType.Text)
     private String name;
-    @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @Field(analyzer = "ik_max_word", type = FieldType.Text)
     private String subTitle;
-    @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @Field(analyzer = "ik_max_word", type = FieldType.Text)
     private String keywords;
     private BigDecimal price;
     private Integer sale;
@@ -53,150 +57,6 @@ public class EsProduct implements Serializable {
     private Integer stock;
     private Integer promotionType;
     private Integer sort;
-    @Field(type =FieldType.Nested)
+    @Field(type = FieldType.Nested)
     private List<EsProductAttributeValue> attrValueList;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProductSn() {
-        return productSn;
-    }
-
-    public void setProductSn(String productSn) {
-        this.productSn = productSn;
-    }
-
-    public Long getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
-
-    public String getBrandName() {
-        return brandName;
-    }
-
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
-
-    public Long getProductCategoryId() {
-        return productCategoryId;
-    }
-
-    public void setProductCategoryId(Long productCategoryId) {
-        this.productCategoryId = productCategoryId;
-    }
-
-    public String getProductCategoryName() {
-        return productCategoryName;
-    }
-
-    public void setProductCategoryName(String productCategoryName) {
-        this.productCategoryName = productCategoryName;
-    }
-
-    public String getPic() {
-        return pic;
-    }
-
-    public void setPic(String pic) {
-        this.pic = pic;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Integer getSale() {
-        return sale;
-    }
-
-    public void setSale(Integer sale) {
-        this.sale = sale;
-    }
-
-    public Integer getNewStatus() {
-        return newStatus;
-    }
-
-    public void setNewStatus(Integer newStatus) {
-        this.newStatus = newStatus;
-    }
-
-    public Integer getRecommandStatus() {
-        return recommandStatus;
-    }
-
-    public void setRecommandStatus(Integer recommandStatus) {
-        this.recommandStatus = recommandStatus;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    public Integer getPromotionType() {
-        return promotionType;
-    }
-
-    public void setPromotionType(Integer promotionType) {
-        this.promotionType = promotionType;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public List<EsProductAttributeValue> getAttrValueList() {
-        return attrValueList;
-    }
-
-    public void setAttrValueList(List<EsProductAttributeValue> attrValueList) {
-        this.attrValueList = attrValueList;
-    }
 }
