@@ -3,6 +3,7 @@ package com.cyf.malldemo.controller;
 import com.cyf.malldemo.common.CommonPage;
 import com.cyf.malldemo.common.CommonResult;
 import com.cyf.malldemo.domain.EsProduct;
+import com.cyf.malldemo.domain.EsProductRelatedInfo;
 import com.cyf.malldemo.service.EsProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -76,5 +77,13 @@ public class EsProductController {
                                                          @RequestParam(value = "pageSize", required = false, defaultValue = "5") Integer pageSize) {
         Page<EsProduct> esProductPage = esProductService.recommend(id, pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(esProductPage));
+    }
+
+    @ApiOperation(value = "获取搜索的相关品牌、分类及筛选属性")
+    @RequestMapping(value = "/search/relate", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<EsProductRelatedInfo> searchRelatedInfo(@RequestParam(required = false) String keyword) {
+        EsProductRelatedInfo productRelatedInfo = esProductService.searchRelatedInfo(keyword);
+        return CommonResult.success(productRelatedInfo);
     }
 }
